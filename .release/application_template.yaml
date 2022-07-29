@@ -16,7 +16,7 @@ infrastructure:
   - name: lambda
     type: terraform
     directory: "./terraform"
-    values: ".release/values.tfvar"
+    values: ".release/lambda.tfvar"
 
 workflows:
   - name: setup

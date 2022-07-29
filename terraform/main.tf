@@ -6,6 +6,10 @@ terraform {
   }
 }
 
+provider "aws" {
+  region = vars.aws_region
+}
+
 module "lambda_function" {
   function_name                     = substr("${vars.namespace}-terraform-runner-example", 0, 64)
   source                            = "terraform-aws-modules/lambda/aws"
