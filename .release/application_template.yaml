@@ -1,0 +1,10 @@
+infrastructure:
+  - name: lambda
+    type: terraform
+    directory: "./terraform"
+    values: ".release/values.tfvar"
+
+workflows:
+  - name: setup
+    order_from:
+      - infrastructure.lambda
