@@ -6,6 +6,14 @@ terraform {
   }
 }
 
-resource "aws_lambda_function" "lambda" {
-  function_name = "${vars.namespace}/lambda"
+module "lambda_function" {
+  function_name                     = substr("${vars.namespace}-terraform-runner-example", 0, 64)
+  source                            = "terraform-aws-modules/lambda/aws"
+  description                       = "Sample Lambda function created by ReleaseHub demo app"
+  handler                           = "index.handler"
+  runtime                           = "nodejs14.x"
+  source_path                       = "./lambda"
+  policy_path                       = "/release/"
+  role_path                         = "/release/"
+  role_name                         = "${vars.namespace}-lambda"
 }
