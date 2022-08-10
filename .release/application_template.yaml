@@ -1,4 +1,8 @@
+app: terraform-runner-example
 auto_deploy: true
+context: hubofhubs-release-us-west-2
+domain: release.hubofhubs.com
+repo_name: releasehub-samples/terraform-runner-example
 
 environment_templates:
   - name: ephemeral
