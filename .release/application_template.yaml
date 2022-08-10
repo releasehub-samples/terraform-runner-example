@@ -13,18 +13,18 @@ resources:
   replicas: 1
 
 infrastructure:
-  - name: lambda
+  - name: terraform-demo
     type: terraform
     directory: "./terraform"
-    values: ".release/lambda.tfvar"
+    values: ".terraform/variables.tfvar"
 
 workflows:
   - name: setup
     order_from:
-      - infrastructure.lambda
+      - infrastructure.terraform-demo
   - name: patch
     order_from:
-      - infrastructure.lambda
+      - infrastructure.terraform-demo
   - name: teardown
     order_from:
       - release.remove_environment
