@@ -1,0 +1,19 @@
+version: "3"
+
+services:
+  db:
+    image: aa8y/postgres-dataset:world      # Public PG container from DockerHub pre-loaded with "world" public dataset
+    restart: always
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: changeme
+    deploy:
+      resources:
+        limits:
+          cpus: "0.50"
+          memory: "512M"
+        reservations:
+          cpus: "0.25"
+          memory: "128M"
