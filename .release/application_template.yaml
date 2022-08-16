@@ -18,7 +18,7 @@ resources:
 
 infrastructure:
   - name: terraform-demo
-    typed: terraform
+    type: terraform
     directory: "./terraform"
     values: "./terraform/variables.tfvar"
 

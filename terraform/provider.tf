@@ -8,7 +8,7 @@ terraform {
 }
 
 provider "aws" {
-  region = var.aws_region
+  region = "${var.RELEASE_CLUSTER_REGION}"
    default_tags {
    tags = {
      release_env_id = "${var.RELEASE_ENV_ID}"
