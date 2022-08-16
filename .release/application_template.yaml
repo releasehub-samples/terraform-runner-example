@@ -18,9 +18,9 @@ resources:
 
 infrastructure:
   - name: terraform-demo
-    type: terraform
+    typed: terraform
     directory: "./terraform"
-    values: ".terraform/variables.tfvar"
+    values: "./terraform/variables.tfvar"
 
 workflows:
   - name: setup
