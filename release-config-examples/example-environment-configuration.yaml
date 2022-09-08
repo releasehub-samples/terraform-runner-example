@@ -36,6 +36,9 @@ infrastructure:
   type: terraform
   directory: terraform-modules/lambda
   values: terraform-modules/lambda/tfvars/default.tfvar
+- name: serverless-api
+  type: terraform
+  directory: terraform-modules/serverless-api
 workflows:
 - name: setup
   parallelize:
@@ -44,6 +47,7 @@ workflows:
     - services.frontend
     - infrastructure.dynamodb-example
     - infrastructure.lambda-example
+    - infrastructure.serverless-api
 - name: setup
   parallelize:
   - step: start_all_at_once
@@ -51,6 +55,7 @@ workflows:
     - services.frontend
     - infrastructure.dynamodb-example
     - infrastructure.lambda-example
+    - infrastructure.serverless-api
 - name: teardown
   order_from:
   - release.remove_environment
