@@ -1,0 +1,42 @@
+---
+app: terraform-runner-example
+auto_deploy: true
+context: hubofhubs-release-us-west-2
+domain: release.hubofhubs.com
+repo_name: releasehub-samples/terraform-runner-example
+environment_templates:
+- name: ephemeral
+resources:
+  cpu:
+    limits: 1000m
+    requests: 100m
+  memory:
+    limits: 1Gi
+    requests: 100Mi
+  replicas: 1
+services:
+- name: dummy
+  image: google/pause
+infrastructure:
+- name: dynamodb-example
+  type: terraform
+  directory: terraform/dynamodb-module
+- name: lambda-example
+  type: terraform
+  directory: terraform/lambda-module
+workflows:
+- name: setup
+  parallelize:
+  - step: start_all_at_once
+    tasks:
+    - infrastructure.dynamodb-example
+    - infrastructure.lambda-example
+- name: setup
+  parallelize:
+  - step: start_all_at_once
+    tasks:
+    - infrastructure.dynamodb-example
+    - infrastructure.lambda-example
+- name: teardown
+  order_from:
+  - release.remove_environment
