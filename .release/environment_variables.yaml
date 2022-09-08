@@ -1,8 +1,0 @@
----
-# These are injected to all containers in your application template (e.g. 
-# jobs and services). These do not get injected during the Docker image
-# builf if using Release for builds. Instead, use the separate Build Arguments
-# described in our documentation (https:://docs.releasehub.com):
-defaults: []
-
-services: {}
