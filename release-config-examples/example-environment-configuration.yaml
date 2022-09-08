@@ -12,28 +12,43 @@ resources:
     limits: 1Gi
     requests: 100Mi
   replicas: 1
+hostnames:
+- frontend: frontend-${env_id}-${domain}
+
 services:
 - name: dummy
   image: google/pause
+- name: frontend
+  image: releaseub-samples/terraform-runner-example/frontend
+  build:
+    context: "./reactjs-frontend"
+  has_repo: true
+  static: true
+  ports:
+  - type: node_port
+    target_port: '3000'
+    port: '3000'
 infrastructure:
 - name: dynamodb-example
   type: terraform
-  directory: terraform/dynamodb-module
+  directory: terraform-modules/dynamodb
 - name: lambda-example
   type: terraform
-  directory: terraform/lambda-module
-  values: terraform/lambda-module/tfvars/default.tfvar
+  directory: terraform-modules/lambda
+  values: terraform-modules/lambda/tfvars/default.tfvar
 workflows:
 - name: setup
   parallelize:
   - step: start_all_at_once
     tasks:
+    - services.frontend
     - infrastructure.dynamodb-example
     - infrastructure.lambda-example
 - name: setup
   parallelize:
   - step: start_all_at_once
     tasks:
+    - services.frontend
     - infrastructure.dynamodb-example
     - infrastructure.lambda-example
 - name: teardown
