@@ -18,7 +18,6 @@ provider "aws" {
       releasehub_application  = var.RELEASE_APP_NAME
       releasehub_environment  = var.RELEASE_ENV_ID
       releasehub_branch       = var.RELEASE_BRANCH_NAME
-      releasehub_commit       = var.RELEASE_COMMIT_SHORT
       releasehub_context      = var.RELEASE_CONTEXT
     }
  }
@@ -55,14 +54,9 @@ variable "RELEASE_CLOUD_PROVIDER" {
   description = "ReleaseHub platform of this environment (gcp or aws)"
 }
 
-variable "RELEASE_COMMIT_SHA" {
+variable "RELEASE_CLUSTER_REGION" {
   type        = string
-  description = "Commit SHA used to build this current ReleaseHub environment"
-}
-
-variable "RELEASE_COMMIT_SHA" {
-  type        = string
-  description = "Short commit hash from RELEASE_COMMIT_SHA"
+  description = "ReleaseHub platform of this environment (gcp or aws)"
 }
 
 variable "RELEASE_CONTEXT" {
