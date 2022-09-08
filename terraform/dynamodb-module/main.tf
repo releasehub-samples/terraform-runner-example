@@ -19,6 +19,7 @@ provider "aws" {
       releasehub_environment  = var.RELEASE_ENV_ID
       releasehub_branch       = var.RELEASE_BRANCH_NAME
       releasehub_context      = var.RELEASE_CONTEXT
+      terraform_stack_desc    = "Example DynamoDB Module"
     }
  }
 }
@@ -70,8 +71,28 @@ variable "RELEASE_DOMAIN" {
 }
 
 #---------------------------------------------------------------------------------------
-resource "aws_dynamodb_table" "table" {
-  name         = var.table_name
+
+# If you create multiple resources of the same type in the same stack, you may need additional uniqueness
+# if unique values aren't already somehow generated. A random ID is one way to solve this (you'd need 
+# one for each resource). You can add a prefix.
+# NOTE - you'll want to use keepers, which say "do not generate a new value unless one or more of these
+# other keeper values changes." Without this, you'll end up generating a new value and recreating existing
+# resources on each terraform apply / environment update.
+resource "random_id" "example_table_name" {
+  byte_length = 8
+  prefix = "releasehub-${var.RELEASE_ENV_ID}-"
+  keepers = {
+    # As these values shouldn't change between deployments of the same environment,
+    # they're good candidates for keepers.
+    release_app_name = var.RELEASE_APP_NAME
+    release_branch_name = var.RELEASE_BRANCH_NAME
+    release_env_id = var.RELEASE_ENV_ID
+  }
+}
+
+#---------------------------------------------------------------------------------------
+resource "aws_dynamodb_table" "example_table" {
+  name         = random_id.example_table_name.hex
   billing_mode = "PAY_PER_REQUEST"
   hash_key     = "PK"
 
@@ -80,32 +101,21 @@ resource "aws_dynamodb_table" "table" {
     type = "S"
   }
 }
+
 #---------------------------------------------------------------------------------------
 
 locals {
-  # If you need a unique ID for a resource property or output, you might, for example, 
-  # use locals to define them once. Depending on the property, you may or may not be able to use
-  # slashes or other separators. You may need to limit string length, as well. 
-  stack_prefix_dashed = "${var.RELEASE_APP_NAME}-${var.RELEASE_BRANCH_NAME}-${var.RELEASE_ENV_ID}"
-  stack_prefix_slashed = "${var.RELEASE_APP_NAME}/${var.RELEASE_BRANCH_NAME}/${var.RELEASE_ENV_ID}"
-
-  # Value length are of course limited and vary depending on the property and resource ,so you 
-  # might do something like this, as well: 
-  stack_prefix_slashed_64 = substr("${var.RELEASE_APP_NAME}/${var.RELEASE_BRANCH_NAME}/${var.RELEASE_ENV_ID}",0, 64)
-
+  release_unique_prefix_slashed = "/releasehub/${var.RELEASE_APP_NAME}/${var.RELEASE_BRANCH_NAME}/${var.RELEASE_ENV_ID}"
 }
 
-#---------------------------------------------------------------------------------------
-
-output "table_arn" {
-  value = aws_dynamodb_table.table.arn
-}
-
-#---------------------------------------------------------------------------------------
-
-resource "aws_ssm_parameter" "table_arn" {
-  name  = "/release/${local.stack_prefix_slashed_64}/table_arn"
+# We can also write outputs to a place like AWS Parameter Store for visibility or integration with other services: 
+resource "aws_ssm_parameter" "example_table_name" {
+  name  = "${local.release_unique_prefix_slashed}/example_table_name"
   type  = "String"
-  value = aws_dynamodb_table.table.arn
+  value = aws_dynamodb_table.example_table.id
 }
 
+# Or use native TF outputs:
+output "table_arn" {
+  value = aws_dynamodb_table.example_table.id
+}

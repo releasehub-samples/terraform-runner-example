@@ -1,0 +1,3 @@
+# In this example, we're letting ReleaseHub handle state file management 
+# for us in ephemeral environments, so we do *not* want to maintain / keep state ourselves. 
+.terraform
