@@ -98,7 +98,7 @@ locals {
 #---------------------------------------------------------------------------------------
 
 output "table_arn" {
-  value = aws_dynamodb_table.arn
+  value = aws_dynamodb_table.table.arn
 }
 
 #---------------------------------------------------------------------------------------
@@ -106,6 +106,6 @@ output "table_arn" {
 resource "aws_ssm_parameter" "table_arn" {
   name  = "/release/${local.stack_prefix_slashed_64}/table_arn"
   type  = "String"
-  value = aws_dynamodb_table.arn
+  value = aws_dynamodb_table.table.arn
 }
 
