@@ -9,8 +9,10 @@ const release = {
    ENV_ID: process.env.REACT_APP_RELEASE_ENV_ID || '<missing env var>'
 }
 
+const FARGATE_ALB_ENDPOINT = process.env.REACT_APP_fargate_alb_endpoint || "endpoint missing from env vars"
+
 import axios from "axios";
-const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || "https://fudhnkqmn4.execute-api.us-west-2.amazonaws.com/";
+const API_BASE_URL = process.env.REACT_APP_api_base_url|| "https://parameter_missing_from_env_vars";
 const client = axios.create({
 	baseURL: API_BASE_URL
 });
@@ -69,6 +71,10 @@ function App() {
       <p>
         <b>API Gateway Results:</b><br/>
           <ApiResults/>
+      </p>
+      <br/>
+      <p>
+        <b>ECS Fargate Service ALB Endpoint:</b> {FARGATE_ALB_ENDPOINT}<br/>
       </p>
     </div>
   );

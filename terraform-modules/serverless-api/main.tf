@@ -141,7 +141,11 @@ output "base_url" {
 }
 
 locals {
-  api_base_url_parameter_name = "/releasehub/${var.RELEASE_APP_NAME}/${var.RELEASE_BRANCH_NAME}/${var.RELEASE_ENV_ID}/api_base_url"
+  ssm_parameter_prefix = "/releasehub/${var.RELEASE_APP_NAME}/${var.RELEASE_BRANCH_NAME}/${var.RELEASE_ENV_ID}"
+}
+
+locals {
+  api_base_url_parameter_name = "${local.ssm_parameter_prefix}/api_base_url"
 }
 
 # We can also write outputs to a place like AWS Parameter Store for visibility or integration with other services: 
