@@ -20,7 +20,8 @@ services:
 - name: frontend
   static: true
   build_base: reactjs-frontend
-  build_command: yarn build
+  build_command: npm run build-release
+  build_package_install_command: npm install
   build_output_directory: build
 infrastructure:
 - name: dynamodb-example
