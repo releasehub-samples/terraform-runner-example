@@ -17,7 +17,7 @@ function App() {
   return (
     <div className="App">
       <div>
-        <h1 style={{"font-size": '70px'}}>
+        <h1 style={{"fontSize": '70px'}}>
             Hello, world.
         </h1>
       </div>
@@ -25,8 +25,8 @@ function App() {
       <p>
       ${REACT_APP_API_BASE_URL.toString()}
       </p>
-      </div>
+    </div>
   );
 }
 
-export default App();
+export default App;
