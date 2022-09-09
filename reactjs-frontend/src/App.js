@@ -1,17 +1,18 @@
-//import logo from './logo.svg';
 import './App.css';
 
 import React, { useEffect, useState } from "react";
-//import React from "react";
-// import the react-json-view component
-//import JSONViewer from 'react-json-viewer';
+
+const release = {
+   ACCOUNT_ID: process.env.REACT_APP_RELEASE_ACCOUNT_ID || '<missing env var>',
+   APP_NAME: process.env.REACT_APP_RELEASE_APP_NAME || '<missing env var>',
+   BRANCH_NAME: process.env.REACT_APP_RELEASE_BRANCH_NAME || '<missing env var>',
+   ENV_ID: process.env.REACT_APP_RELEASE_ENV_ID || '<missing env var>'
+}
 
 import axios from "axios";
-
-const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || "Failed to retrieve REACT_APP_API_BASE_URL at build time.";
-
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || "https://fudhnkqmn4.execute-api.us-west-2.amazonaws.com/";
 const client = axios.create({
-	baseURL: process.env.REACT_APP_BACKEND_URL
+	baseURL: API_BASE_URL
 });
 
 function App() {
@@ -27,21 +28,21 @@ function App() {
   }, []);
 
   async function getApiResponse() {
-    ``;
     try {
       setLoaded(false);
-      const data = await getHelloMessage();
-      setData(data);
+      let response = await client.get(`${API_BASE_URL}`);
+
+      console.log(`Received: ${JSON.stringify(data,null,2)}`);
+      setData(response.data);
     } catch (e) {
+      console.log(`Error: ${JSON.stringify(e,null,2)}`);
       setError(e);
     } finally {
+      console.log(`Done loading.`);
       setLoaded(true);
     }
   }
 
-  async function getHelloMessage() {
-    return await client.get(`${API_BASE_URL}/hello`);
-  }
 
   function ApiResults() {
     if (error) {
@@ -57,6 +58,13 @@ function App() {
             Hello, world.
         </h1>
       </div>
+      <br/>
+      <p>
+        <b>Account:</b> ${release.ACCOUNT_ID}<br/>
+        <b>Application:</b> ${release.APP_NAME}<br/>
+        <b>Branch:</b> ${release.BRANCH_NAME}<br/>
+        <b>Environment ID:</b> ${release.ENV_ID}
+      </p>
       <br/>
       <p>
         <b>API Gateway Results:</b><br/>
