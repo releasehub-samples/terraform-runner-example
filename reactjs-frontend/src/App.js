@@ -40,7 +40,7 @@ function App() {
   }
 
   async function getHelloMessage() {
-    return await client.get(`${API_BASE_URL}/hello/hello`);
+    return await client.get(`${API_BASE_URL}/hello`);
   }
 
   function ApiResults() {
