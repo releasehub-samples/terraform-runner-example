@@ -1,0 +1,64 @@
+---
+app: terraform-runner-example
+auto_deploy: true
+context: hubofhubs-release-us-west-2
+domain: release.hubofhubs.com
+repo_name: releasehub-samples/terraform-runner-example
+resources:
+  cpu:
+    limits: 1000m
+    requests: 100m
+  memory:
+    limits: 1Gi
+    requests: 100Mi
+  replicas: 1
+hostnames:
+- frontend: frontend-${env_id}.${domain}
+services:
+- name: dummy
+  image: google/pause
+- name: frontend
+  static: true
+  build_base: reactjs-frontend
+  build_command: npm run build-release
+  build_package_install_command: npm install
+  build_output_directory: build
+infrastructure:
+- name: dynamodb-example
+  type: terraform
+  directory: terraform-modules/dynamodb
+- name: lambda-example
+  type: terraform
+  directory: terraform-modules/lambda
+  values: terraform-modules/lambda/tfvars/default.tfvar
+- name: serverless-api
+  type: terraform
+  directory: terraform-modules/serverless-api
+workflows:
+- name: setup
+  parallelize:
+  - step: start_all_at_once
+    tasks:
+    - infrastructure.dynamodb-example
+    - infrastructure.lambda-example
+    - infrastructure.serverless-api
+  - step: deploy_frontend
+    tasks:
+    - services.frontend
+- name: patch
+  parallelize:
+  - step: start_all_at_once
+    tasks:
+    - infrastructure.dynamodb-example
+    - infrastructure.lambda-example
+    - infrastructure.serverless-api
+  - step: deploy_frontend
+    tasks:
+    - services.frontend
+- name: teardown
+  order_from:
+  - release.remove_environment
+- name: teardown
+  order_from:
+  - release.remove_environment
+tracking_branch: mw

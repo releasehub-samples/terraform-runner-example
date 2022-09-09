@@ -1,2 +1,0 @@
-aws_region = "us-west-2"
-namespace = "${RELEASE_ACCOUNT_ID}/${RELEASE_APPLICATION_NAME}/${RELEASE_ENV_ID}/"
