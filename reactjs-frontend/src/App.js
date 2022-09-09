@@ -8,11 +8,13 @@ import React from "react";
 
 //import axios from "axios";
 
-const API_BASE_URL = process.env.API_BASE_URL || false
+const API_BASE_URL = process.env.API_BASE_URL || false;
+const REACT_APP_API_BASE_URL = process.env.API_BASE_URL || false;
 
 function App() {
 
-  console.log(API_BASE_URL);
+  console.log('API_BASE_URL: ' + API_BASE_URL.toString());
+  console.log('API_BASE_URL: ' + REACT_APP_API_BASE_URL.toString());
   
   return (
     <div className="App">
