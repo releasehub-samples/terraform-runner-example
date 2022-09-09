@@ -13,7 +13,7 @@ resources:
     requests: 100Mi
   replicas: 1
 hostnames:
-- frontend: frontend-${env_id}-${domain}
+- frontend: frontend-${env_id}.${domain}
 
 services:
 - name: dummy

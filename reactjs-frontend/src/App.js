@@ -8,9 +8,7 @@ import React from "react";
 
 //import axios from "axios";
 
-const API_HOST = process.env.API_HOST || "api";
-const API_PORT = process.env.API_PORT || "7001";
-const API_BASE_URL = `http://${API_HOST}:${API_PORT}`
+const API_BASE_URL = process.env.API_BASE_URL || "Environment variable API_BASE_URL not set."
 
 function App() {
 
@@ -21,6 +19,8 @@ function App() {
       <div>
       <h1 style={{"font-size": '70px'}}>
           Hello, world.
+          <br/>
+          API Base URL: ${API_BASE_URL}
       </h1>
       </div>
     </div>

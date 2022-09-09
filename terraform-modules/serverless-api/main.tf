@@ -134,3 +134,14 @@ output "base_url" {
 
   value = aws_apigatewayv2_stage.lambda.invoke_url
 }
+
+locals {
+  api_base_url_parameter_name = "/releasehub/${var.RELEASE_APP_NAME}/${var.RELEASE_BRANCH_NAME}/${var.RELEASE_ENV_ID}/api_base_url"
+}
+
+# We can also write outputs to a place like AWS Parameter Store for visibility or integration with other services: 
+resource "aws_ssm_parameter" "api_base_url" {
+  name  = api_base_url_parameter_name
+  type  = "String"
+  value = aws_apigatewayv2_stage.lambda.invoke_url
+}
