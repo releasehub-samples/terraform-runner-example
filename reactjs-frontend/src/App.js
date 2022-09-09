@@ -19,9 +19,9 @@ function App() {
       <div>
       <h1 style={{"font-size": '70px'}}>
           Hello, world.
-          <br/>
-          API Base URL: ${API_BASE_URL}
       </h1>
+      <br/>
+          ${API_BASE_URL}
       </div>
     </div>
   );

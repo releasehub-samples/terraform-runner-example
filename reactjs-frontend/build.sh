@@ -5,6 +5,9 @@ PARAMETER_NAME="/releasehub/$RELEASE_APP_NAME/$RELEASE_BRANCH_NAME/$RELEASE_ENV_
 echo Attempting to retrieve parameter: $PARAMETER_NAME
 export REACT_APP_API_BASE_URL=$(aws ssm get-parameter --name $PARAMETER_NAME)
 
+echo "AWS IDENTITY":
+aws sts get-caller-identity
+
 # Was retrieval successful?
 if [ ! -z "$REACT_APP_API_BASE_URL" ]   
 then    
