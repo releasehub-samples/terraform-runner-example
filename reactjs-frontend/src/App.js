@@ -8,12 +8,10 @@ import React from "react";
 
 //import axios from "axios";
 
-const API_BASE_URL = process.env.API_BASE_URL || false;
-const REACT_APP_API_BASE_URL = process.env.REACT_APP_API_BASE_URL || false;
+const REACT_APP_API_BASE_URL = process.env.REACT_APP_API_BASE_URL || "Failed to retrieve REACT_APP_API_BASE_URL at build time.";
 
 function App() {
 
-  console.log('API_BASE_URL: ' + API_BASE_URL.toString());
   console.log('API_BASE_URL: ' + REACT_APP_API_BASE_URL.toString());
   
   return (
@@ -25,7 +23,7 @@ function App() {
       </div>
       <br/>
       <p>
-      ${REACT_APP_API_BASE_URL != false ? REACT_APP_API_BASE_URL.toString() : "Unable to retrieve API_BASE_URL from environment variables. Check static build logs and make sure you are exporting REACT_APP_API_BASE_URL in your build script."}
+      ${REACT_APP_API_BASE_URL.toString()}
       </p>
       </div>
   );
