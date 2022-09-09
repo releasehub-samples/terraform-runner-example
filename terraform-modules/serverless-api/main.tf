@@ -141,7 +141,7 @@ locals {
 
 # We can also write outputs to a place like AWS Parameter Store for visibility or integration with other services: 
 resource "aws_ssm_parameter" "api_base_url" {
-  name  = api_base_url_parameter_name
+  name  = local.api_base_url_parameter_name
   type  = "String"
   value = aws_apigatewayv2_stage.lambda.invoke_url
 }
