@@ -14,20 +14,14 @@ resources:
   replicas: 1
 hostnames:
 - frontend: frontend-${env_id}.${domain}
-
 services:
 - name: dummy
   image: google/pause
 - name: frontend
-  image: releaseub-samples/terraform-runner-example/frontend
-  build:
-    context: "./reactjs-frontend"
-  has_repo: true
   static: true
-  ports:
-  - type: node_port
-    target_port: '3000'
-    port: '3000'
+  build_base: reactjs-frontend
+  build_command: yarn build
+  build_output_directory: build
 infrastructure:
 - name: dynamodb-example
   type: terraform
@@ -44,18 +38,25 @@ workflows:
   parallelize:
   - step: start_all_at_once
     tasks:
-    - services.frontend
     - infrastructure.dynamodb-example
     - infrastructure.lambda-example
     - infrastructure.serverless-api
-- name: setup
+  - step: deploy_frontend
+    tasks:
+    - services.frontend
+- name: patch
   parallelize:
   - step: start_all_at_once
     tasks:
-    - services.frontend
     - infrastructure.dynamodb-example
     - infrastructure.lambda-example
     - infrastructure.serverless-api
+  - step: deploy_frontend
+    tasks:
+    - services.frontend
+- name: teardown
+  order_from:
+  - release.remove_environment
 - name: teardown
   order_from:
   - release.remove_environment
