@@ -4,10 +4,10 @@ echo "AWS IDENTITY":
 aws sts get-caller-identity
 
 # Just in case parameters are somewhere other than the cluster region, you could modify this: 
-export PARAMETER_REGION=${RELEASE_CLUSTER_REGION}
+export PARAMETER_REGION=$RELEASE_CLUSTER_REGION
 
 # Retrieve the DNS endpoint of API Gateway previously created from our Terraform:
-PARAMETER_NAME="/releasehub/$RELEASE_APP_NAME/$RELEASE_BRANCH_NAME/$RELEASE_ENV_ID/api_base_url" --region=PARAMETER_REGION
+PARAMETER_NAME="/releasehub/$RELEASE_APP_NAME/$RELEASE_BRANCH_NAME/$RELEASE_ENV_ID/api_base_url" --region=$PARAMETER_REGION
 echo Attempting to retrieve parameter: $PARAMETER_NAME
 
 
