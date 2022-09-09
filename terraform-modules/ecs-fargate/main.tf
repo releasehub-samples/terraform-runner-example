@@ -48,8 +48,11 @@ resource "random_id" "releasehub" {
 }
 
 locals {
+  random_releasehub_id = random_id.releasehub.hex
   release_unique_prefix_slashed = "/releasehub/${var.RELEASE_APP_NAME}/${var.RELEASE_BRANCH_NAME}/${var.RELEASE_ENV_ID}"
   release_unique_prefix_dashed = "releasehub-${var.RELEASE_APP_NAME}-${var.RELEASE_BRANCH_NAME}-${var.RELEASE_ENV_ID}"
+  release_short_prefix = "releasehub-${var.RELEASE_ENV_ID}"
+
 }
 
 #---------------------------------------------------------------------------------------
@@ -70,12 +73,14 @@ module "alb" {
   source  = "umotif-public/alb/aws"
   version = "~> 2.0"
 
-  name_prefix        = random_id.releasehub.hex
+
+  name_prefix        = local.random_releasehub_id
   load_balancer_type = "application"
   internal           = false
   vpc_id             = data.aws_vpc.default.id
   subnets            = data.aws_subnets.all.ids
 }
+
 
 resource "aws_security_group_rule" "alb_ingress_80" {
   security_group_id = module.alb.security_group_id
@@ -97,7 +102,7 @@ resource "aws_security_group_rule" "task_ingress_80" {
 }
 
 resource "aws_ecs_cluster" "cluster" {
-  name = random_id.releasehub.hex
+  name = local.random_releasehub_id
 
   setting {
     name  = "containerInsights"
@@ -105,17 +110,6 @@ resource "aws_ecs_cluster" "cluster" {
   }
 }
 
-
-resource "aws_lb_listener" "alb_80" {
-  load_balancer_arn = module.alb.arn
-  port              = "80"
-  protocol          = "HTTP"
-
-  default_action {
-    type             = "forward"
-    target_group_arn = module.ecs-fargate.target_group_arn[0]
-  }
-}
 
 
 resource "aws_ecs_cluster_capacity_providers" "cluster" {
@@ -128,11 +122,12 @@ resource "aws_ecs_cluster_capacity_providers" "cluster" {
   }
 }
 
+
 module "ecs-fargate" {
   source = "umotif-public/ecs-fargate/aws"
   version = "~> 6.1.0"
 
-  name_prefix        = random_id.releasehub.hex
+  name_prefix        = local.random_releasehub_id
   vpc_id             = data.aws_vpc.default.id
   private_subnet_ids = data.aws_subnets.all.ids
   cluster_id         = aws_ecs_cluster.cluster.id
@@ -148,7 +143,7 @@ module "ecs-fargate" {
   
   target_groups = [
     {
-      target_group_name = random_id.releasehub.hex
+      target_group_name =  "${local.release_short_prefix}"
       container_port    = 80
     }
   ]
