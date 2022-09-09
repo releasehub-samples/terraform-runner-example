@@ -22,7 +22,7 @@ function App() {
         </h1>
       </div>
       <br/>
-      ${API_BASE_URL ? $API_BASE_URL : Unable to retrieve <b>API_BASE_URL</b> from environment variables. Check static build logs and make sure you are exporting REACT_APP_API_BASE_URL in your build script. }
+      ${API_BASE_URL ? API_BASE_URL : "Unable to retrieve API_BASE_URL from environment variables. Check static build logs and make sure you are exporting REACT_APP_API_BASE_URL in your build script."}
     </div>
   );
 }
