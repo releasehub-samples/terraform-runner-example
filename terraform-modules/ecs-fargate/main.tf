@@ -178,9 +178,17 @@ module "ecs-fargate" {
 
 #---------------------------------------------------------------------------------------
 
+locals {
+  ssm_parameter_prefix = "/releasehub/${var.RELEASE_APP_NAME}/${var.RELEASE_BRANCH_NAME}/${var.RELEASE_ENV_ID}"
+}
+
+locals {
+  fargate_alb_endpoint_parameter_name = "${local.ssm_parameter_prefix}/fargate_alb_endpoint"
+}
+
 # We can also write outputs to a place like AWS Parameter Store for visibility or integration with other services: 
 resource "aws_ssm_parameter" "alb_dns_name" {
-  name  = "${local.release_unique_prefix_slashed}/alb_dns_name"
+  name  = local.fargate_alb_endpoint_parameter_name
   type  = "String"
   value = module.alb.dns_name
 }
