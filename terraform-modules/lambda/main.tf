@@ -60,10 +60,6 @@ module "lambda_function" {
 
 #---------------------------------------------------------------------------------------
 
-
-
-#---------------------------------------------------------------------------------------
-
 locals {
   release_unique_prefix_slashed = "/releasehub/${var.RELEASE_APP_NAME}/${var.RELEASE_BRANCH_NAME}/${var.RELEASE_ENV_ID}"
 }

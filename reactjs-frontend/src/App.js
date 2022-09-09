@@ -29,13 +29,13 @@ function App() {
   async function getApiResponse() {
     ``;
     try {
-      setLoaded(true);
+      setLoaded(false);
       const data = await getHelloMessage();
       setData(data);
     } catch (e) {
       setError(e);
     } finally {
-      setLoaded(false);
+      setLoaded(true);
     }
   }
 
