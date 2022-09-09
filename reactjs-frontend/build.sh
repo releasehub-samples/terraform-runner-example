@@ -15,7 +15,7 @@ if ! REACT_APP_API_BASE_URL=$(aws ssm get-parameter --name $PARAMETER_NAME  --re
     REACT_APP_API_BASE_URL="Error: failed to call aws ssm get-parameter --name $PARAMETER_NAME"  
 else
     echo Retrieved API Base URL: $REACT_APP_API_BASE_URL
-    echo REACT_APP_API_BASE_URL=\"${API_BASE_URL}\" > .env
+    echo REACT_APP_API_BASE_URL=\"${REACT_APP_API_BASE_URL}\" > .env
 fi
 
 npm run build
