@@ -2,11 +2,9 @@ terraform {
   required_providers {
     aws = {
       source = "hashicorp/aws"
-      version = "4.8.0"
     }
     random = {
       source = "hashicorp/random"
-      version = "3.0.0"
     }
   }
 }
@@ -36,7 +34,7 @@ provider "aws" {
 # other keeper values changes." Without this, you'll end up generating a new value and recreating existing
 # resources on each terraform apply / environment update.
 resource "random_id" "releasehub" {
-  byte_length = 8
+  byte_length = 4   # using hex will lead to a this number x 2 being added to the prefix
   prefix = "releasehub-${var.RELEASE_ENV_ID}-"
   keepers = {
     # As these values shouldn't change between deployments of the same environment,
@@ -48,7 +46,7 @@ resource "random_id" "releasehub" {
 }
 
 locals {
-  random_releasehub_id = random_id.releasehub.hex
+  random_releasehub_id = "releasehub-${var.RELEASE_ENV_ID}-${substr(md5("${var.RELEASE_APP_NAME}${var.RELEASE_BRANCH_NAME}${var.RELEASE_ENV_ID}"),0,8)}"
   release_unique_prefix_slashed = "/releasehub/${var.RELEASE_APP_NAME}/${var.RELEASE_BRANCH_NAME}/${var.RELEASE_ENV_ID}"
   release_unique_prefix_dashed = "releasehub-${var.RELEASE_APP_NAME}-${var.RELEASE_BRANCH_NAME}-${var.RELEASE_ENV_ID}"
   release_short_prefix = "releasehub-${var.RELEASE_ENV_ID}"
@@ -79,6 +77,18 @@ module "alb" {
   internal           = false
   vpc_id             = data.aws_vpc.default.id
   subnets            = data.aws_subnets.all.ids
+
+}
+
+resource "aws_lb_listener" "alb_80" {
+  load_balancer_arn = module.alb.arn
+  port              = "80"
+  protocol          = "HTTP"
+
+  default_action {
+    type             = "forward"
+    target_group_arn = module.ecs-fargate.target_group_arn[0]
+  }
 }
 
 
@@ -125,9 +135,9 @@ resource "aws_ecs_cluster_capacity_providers" "cluster" {
 
 module "ecs-fargate" {
   source = "umotif-public/ecs-fargate/aws"
-  version = "~> 6.1.0"
+  version = "~> 6.5.0"
 
-  name_prefix        = local.random_releasehub_id
+  name_prefix        = local.release_short_prefix
   vpc_id             = data.aws_vpc.default.id
   private_subnet_ids = data.aws_subnets.all.ids
   cluster_id         = aws_ecs_cluster.cluster.id
@@ -139,11 +149,11 @@ module "ecs-fargate" {
   task_container_port             = 80
   task_container_assign_public_ip = true
 
-  load_balanced =  true
+  #load_balanced =  true
   
   target_groups = [
     {
-      target_group_name =  "${local.release_short_prefix}"
+      target_group_name =  local.release_short_prefix
       container_port    = 80
     }
   ]
@@ -152,6 +162,18 @@ module "ecs-fargate" {
     port = "traffic-port"
     path = "/"
   }
+
+  capacity_provider_strategy = [
+    {
+      capacity_provider = "FARGATE_SPOT",
+      weight            = 100
+    }
+  ]
+
+  depends_on = [
+    module.alb
+  ]
+  
 }
 
 #---------------------------------------------------------------------------------------

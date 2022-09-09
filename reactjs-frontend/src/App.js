@@ -60,10 +60,10 @@ function App() {
       </div>
       <br/>
       <p>
-        <b>Account:</b> ${release.ACCOUNT_ID}<br/>
-        <b>Application:</b> ${release.APP_NAME}<br/>
-        <b>Branch:</b> ${release.BRANCH_NAME}<br/>
-        <b>Environment ID:</b> ${release.ENV_ID}
+        <b>Account:</b> {release.ACCOUNT_ID}<br/>
+        <b>Application:</b> {release.APP_NAME}<br/>
+        <b>Branch:</b> {release.BRANCH_NAME}<br/>
+        <b>Environment ID:</b> {release.ENV_ID}
       </p>
       <br/>
       <p>

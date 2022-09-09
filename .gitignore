@@ -29,3 +29,7 @@ yarn-error.log*
 .env
 
 data
+
+*.tfstate
+*.tfstate.backup
+*.tfstate.lock.info
