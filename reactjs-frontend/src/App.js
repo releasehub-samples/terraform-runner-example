@@ -8,7 +8,7 @@ import React from "react";
 
 //import axios from "axios";
 
-const API_BASE_URL = process.env.API_BASE_URL || "Environment variable API_BASE_URL not set."
+const API_BASE_URL = process.env.API_BASE_URL || false
 
 function App() {
 
@@ -21,7 +21,18 @@ function App() {
           Hello, world.
       </h1>
       <br/>
-          ${API_BASE_URL}
+          ${API_BASE_URL 
+            ? 
+            <p>
+              **API_BASE_URL** environment variable successfully retrieved at build time for this static site.<br/>
+              **Value:** ${API_BASE_URL}<br/>
+              
+            <p/>
+            :
+            <p>
+              Error: Unable to retrieve <b>API_BASE_URL</b> from environment variables. Check static build logs and make sure you are exporting REACT_APP_API_BASE_URL in your build script.
+            </p>
+            }
       </div>
     </div>
   );
