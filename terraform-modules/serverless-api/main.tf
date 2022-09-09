@@ -65,12 +65,17 @@ module "lambda_function" {
 resource "aws_apigatewayv2_api" "lambda" {
   name          = random_id.example_resource_name.hex
   protocol_type = "HTTP"
+  cors_configuration {
+    allow_origins = ["*"]
+    allow_methods = ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST" ,"PUT"]
+    allow_headers = ["Content-Type", "Authorization", "X-Amz-Date", "X-Api-Key", "X-Amz-Security-Token"]
+  }
 }
 
-resource "aws_apigatewayv2_stage" "lambda" {
+resource "aws_apigatewayv2_stage" "default" {
   api_id = aws_apigatewayv2_api.lambda.id
 
-  name        = "v1"
+  name        = "$default"
   auto_deploy = true
 
   access_log_settings {
@@ -92,20 +97,20 @@ resource "aws_apigatewayv2_stage" "lambda" {
   }
 }
 
-resource "aws_apigatewayv2_integration" "hello_world" {
+resource "aws_apigatewayv2_integration" "app" {
   api_id = aws_apigatewayv2_api.lambda.id
 
   integration_uri    = module.lambda_function.lambda_function_invoke_arn
   integration_type   = "AWS_PROXY"
-  integration_method = "POST"
+  //integration_method = "POST"
 }
 
 
-resource "aws_apigatewayv2_route" "hello_world" {
+resource "aws_apigatewayv2_route" "any" {
   api_id = aws_apigatewayv2_api.lambda.id
 
-  route_key = "GET /hello"
-  target    = "integrations/${aws_apigatewayv2_integration.hello_world.id}"
+  route_key = "$default"
+  target    = "integrations/${aws_apigatewayv2_integration.app.id}"
 }
 
 resource "aws_cloudwatch_log_group" "api_gw" {
@@ -132,7 +137,7 @@ resource "aws_lambda_permission" "api_gw" {
 output "base_url" {
   description = "Base URL for API Gateway stage."
 
-  value = aws_apigatewayv2_stage.lambda.invoke_url
+  value = aws_apigatewayv2_stage.default.invoke_url
 }
 
 locals {
@@ -143,5 +148,5 @@ locals {
 resource "aws_ssm_parameter" "api_base_url" {
   name  = local.api_base_url_parameter_name
   type  = "String"
-  value = aws_apigatewayv2_stage.lambda.invoke_url
+  value = aws_apigatewayv2_stage.default.invoke_url
 }
