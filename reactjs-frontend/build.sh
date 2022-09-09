@@ -15,4 +15,4 @@ else
 fi    
 
 # Build react app: 
-npm run react-scripts build
+npm run build
