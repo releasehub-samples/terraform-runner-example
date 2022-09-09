@@ -11,7 +11,7 @@ PARAMETER_NAME="/releasehub/$RELEASE_APP_NAME/$RELEASE_BRANCH_NAME/$RELEASE_ENV_
 echo Attempting to retrieve parameter: $PARAMETER_NAME
 
 
-if ! REACT_APP_API_BASE_URL=$(aws ssm get-parameter --name $PARAMETER_NAME  --region=$PARAMETER_REGION); then
+if ! REACT_APP_API_BASE_URL=$(aws ssm get-parameter --name $PARAMETER_NAME  --region=$PARAMETER_REGION --query "Parameter.Value" --output text); then
     echo "Error: failed to call aws ssm get-parameter --name $PARAMETER_NAME"    
 else
     echo Retrieved API Base URL: $REACT_APP_API_BASE_URL
