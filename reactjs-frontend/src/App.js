@@ -17,25 +17,12 @@ function App() {
   return (
     <div className="App">
       <div>
-      <h1 style={{"font-size": '70px'}}>
-          Hello, world.
-      </h1>
-      <br/>
-          ${API_BASE_URL 
-            ? 
-            <p>
-              **API_BASE_URL** environment variable successfully retrieved at build time for this static site.<br/>
-              **Value:** ${API_BASE_URL}<br/>
-              
-            <p/>
-            :
-            <p>
-              Error: Unable to retrieve <b>API_BASE_URL</b> from environment variables. Check static build logs and make sure you are exporting REACT_APP_API_BASE_URL in your build script.
-            </p>
-            }
+        <h1 style={{"font-size": '70px'}}>
+            Hello, world.
+        </h1>
       </div>
+      <br/>
+      ${API_BASE_URL ? $API_BASE_URL : Unable to retrieve <b>API_BASE_URL</b> from environment variables. Check static build logs and make sure you are exporting REACT_APP_API_BASE_URL in your build script. }
     </div>
   );
 }
-
-export default App;
